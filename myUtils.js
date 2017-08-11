@@ -485,7 +485,9 @@ var Utils = {
         this.setCookie(name, 1, -1);
     },
     /*-----------------------------------------DOM--------------------------------------------*/
-    //检测对象是否有哪个类名
+    /**
+     * 检测对象是否有哪个类名
+     */
     hasClass: function(obj, classStr) {
         if (obj.className && this.trim(obj.className, 1) !== "") {
             var arr = obj.className.split(/\s+/); //这个正则表达式是因为class可以有多个,判断是否包含
@@ -493,9 +495,10 @@ var Utils = {
         } else {
             return false;
         }
-
     },
-    //添加类名
+    /**
+     * 添加类名
+     */
     addClass: function(obj, classStr) {
         if ((this.istype(obj, 'array') || this.istype(obj, 'elements')) && obj.length >= 1) {
             for (var i = 0, len = obj.length; i < len; i++) {
@@ -509,7 +512,9 @@ var Utils = {
             }
         }
     },
-    //删除类名
+    /**
+     * 删除类名
+     */
     removeClass: function(obj, classStr) {
         if ((this.istype(obj, 'array') || this.istype(obj, 'elements')) && obj.length > 1) {
             for (var i = 0, len = obj.length; i < len; i++) {
@@ -525,12 +530,16 @@ var Utils = {
             }
         }
     },
-    //替换类名("被替换的类名","替换的类名")
+    /**
+     * 替换类名("被替换的类名", "替换的类名")
+     */
     replaceClass: function(obj, newName, oldName) {
         this.removeClass(obj, oldName);
         this.addClass(obj, newName);
     },
-    //获取兄弟节点
+    /**
+     * 获取兄弟节点
+     */
     siblings: function(obj, opt) {
         var a = []; //定义一个数组，用来存o的兄弟元素
         var p = obj.previousSibling;
@@ -561,13 +570,18 @@ var Utils = {
         }
         return a;
     },
-    //设置样式
+    /**
+     * 设置样式
+     */
     css: function(obj, json) {
         for (var attr in json) {
             obj.style[attr] = json[attr];
         }
     },
-    //设置文本内容
+    /**
+     * 设置文本内容
+     * 
+     */
     html: function(obj) {
         if (arguments.length == 0) {
             return this.innerHTML;
@@ -575,17 +589,19 @@ var Utils = {
             this.innerHTML = arguments[0];
         }
     },
-    //显示隐藏
+    /**
+     * 显示隐藏
+     * 
+     */
     show: function(obj) {
         obj.style.display = "";
     },
     hide: function(obj) {
         obj.style.display = "none";
     },
-    /* 封装ajax函数
+    /** 封装ajax函数
      * @param {string} obj.type http连接的方式，包括POST和GET两种方式
      * @param {string} obj.url 发送请求的url
-     * @param {boolean} obj.async 是否为异步请求，true为异步的，false为同步的
      * @param {object} obj.data 发送的参数，格式为对象类型
      * @param {function} obj.success ajax发送并接收成功调用的回调函数
      * @param {function} obj.error ajax发送失败或者接收失败调用的回调函数
@@ -604,10 +620,10 @@ var Utils = {
         obj = obj || {};
         obj.type = obj.type.toUpperCase() || 'POST';
         obj.url = obj.url || '';
-        obj.async = obj.async || true;
         obj.data = obj.data || null;
         obj.success = obj.success || function() {};
-        obj.success = obj.error || function() {};
+        obj.error = obj.error || function() {};
+
         var xmlHttp = null;
         if (XMLHttpRequest) {
             xmlHttp = new XMLHttpRequest();
@@ -620,11 +636,11 @@ var Utils = {
         }
         var postData = params.join('&');
         if (obj.type.toUpperCase() === 'POST') {
-            xmlHttp.open(obj.type, obj.url, obj.async);
+            xmlHttp.open(obj.type, obj.url, true);
             xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8');
             xmlHttp.send(postData);
         } else if (obj.type.toUpperCase() === 'GET') {
-            xmlHttp.open(obj.type, obj.url + '?' + postData, obj.async);
+            xmlHttp.open(obj.type, obj.url + '?' + postData, true);
             xmlHttp.send(null);
         }
         xmlHttp.onreadystatechange = function() {
@@ -635,13 +651,12 @@ var Utils = {
             }
         };
     },
-    //获取对象数组某些项
-    //var arr=[{a:1,b:2,c:9},{a:2,b:3,c:5},{a:5,b:9},{a:4,b:2,c:5},{a:4,b:5,c:7}]
-    //getOptionArray(arr,'a,c')
-    //[{a:1,c:9},{a:2,c:5},{a:5,c:underfind},{a:4,c:5},{a:4,c:7}]
-    //getOptionArray(arr,'a',1)
-    //getOptionArray(arr,'b',1)
-    //[2, 3, 9, 2, 5]
+    /**
+     * 获取对象数组某些项
+     * var arr=[{a:1,b:2,c:9},{a:2,b:3,c:5},{a:5,b:9},{a:4,b:2,c:5},{a:4,b:5,c:7}]
+     * getOptionArray(arr,'a,c') => [{a:1,c:9},{a:2,c:5},{a:5,c:underfind},{a:4,c:5},{a:4,c:7}]
+     * getOptionArray(arr,'b',1) => [2, 3, 9, 2, 5]
+     */
     getOptionArray: function(arr, keys, type) {
         var newArr = []
         if (!keys) {
@@ -672,7 +687,7 @@ var Utils = {
     //filterOptionArray(arr,'a,c')
     //[{b:2},{b:3},{b:9},{b:2},{b:5}]
     filterOptionArray: function(arr, keys) {
-        var newArr = []
+        var newArr = [];
         var _keys = keys.split(','),
             newArrOne = {};
         for (var i = 0, len = arr.length; i < len; i++) {
@@ -687,7 +702,9 @@ var Utils = {
         }
         return newArr
     },
-    //图片没加载出来时用一张图片代替
+    /**
+     * 图片没加载出来时用一张图片代替
+     */
     aftLoadImg: function(obj, url, cb) {
         var oImg = new Image(),
             _this = this;
@@ -699,22 +716,17 @@ var Utils = {
             }
         }
     },
-    //图片滚动懒加载
-    //@className {string} 要遍历图片的类名
-    //@num {number} 距离多少的时候开始加载 默认 0
-    //比如，一张图片距离文档顶部3000，num参数设置200，那么在页面滚动到2800的时候，图片加载。不传num参数就滚动，num默认是0，页面滚动到3000就加载
-    //html代码
-    //<p><img data-src="lawyerOtherImg.jpg" class="load-img" width='528' height='304' /></p>
-    //<p><img data-src="lawyerOtherImg.jpg" class="load-img" width='528' height='304' /></p>
-    //<p><img data-src="lawyerOtherImg.jpg" class="load-img" width='528' height='304' /></p>....
-    //data-src储存src的数据，到需要加载的时候把data-src的值赋值给src属性，图片就会加载。
-    //详细可以查看testLoadImg.html
-
+    /**
+     * 图片滚动懒加载
+     * @param {string} className  要遍历图片的类名
+     * @param {number} num  距离多少的时候开始加载 默认 0
+     * <p><img data-src="lawyerOtherImg.jpg" class="load-img" width='528' height='304' /></p>
+     */
     //window.onload = function() {
     //	loadImg('load-img',100);
     //	window.onscroll = function() {
     //		loadImg('load-img',100);
-    //		}
+    //	}
     //}
     loadImg: function(className, num) {
         var _className = className || 'lazy-load-img',
@@ -754,9 +766,11 @@ var Utils = {
             }
         }
     },
-    //7.对象数组的排序
-    //var arr=[{a:1,b:2,c:9},{a:2,b:3,c:5},{a:5,b:9},{a:4,b:2,c:5},{a:4,b:5,c:7}]
-    //arraySort(arr2,'a,b')  a是第一排序条件，b是第二排序条件
+    /**
+     * 对象数组的排序
+     * var arr=[{a:1,b:2,c:9},{a:2,b:3,c:5},{a:5,b:9},{a:4,b:2,c:5},{a:4,b:5,c:7}]
+     * arraySort(arr2,'a,b')  a是第一排序条件，b是第二排序条件
+     */
     arraySort: function(arr, sortText) {
         if (!sortText) {
             return arr
@@ -770,7 +784,10 @@ var Utils = {
         }
         return _arr;
     },
-    //8.数组扁平化
+    /**
+     * 数组扁平化
+     * steamroller([1,2,[4,5,[1,23]]]) => [1, 2, 4, 5, 1, 23]
+     */
     steamroller: function(arr) {
         var newArr = [];
         for (var i = 0; i < arr.length; i++) {
@@ -778,6 +795,7 @@ var Utils = {
                 // 如果是数组，调用(递归)steamroller 将其扁平化
                 // 然后再 push 到 newArr 中
                 newArr.push.apply(newArr, steamroller(arr[i]));
+                //或者  newArr = newArr.concat(steamroller(arr[i]));
             } else {
                 // 不是数组直接 push 到 newArr 中
                 newArr.push(arr[i]);
@@ -785,10 +803,8 @@ var Utils = {
         }
         return newArr;
     },
-    //另一种写法
-    //steamroller([1,2,[4,5,[1,23]]])
-    //[1, 2, 4, 5, 1, 23]
-    /*
+    /** 
+     * 另一种写法
      * i=0 newArr.push(arr[i])  [1]
      * i=1 newArr.push(arr[i])  [1,2]
      * i=2 newArr = newArr.concat(steamroller(arr[i]));  执行到下面
@@ -800,21 +816,9 @@ var Utils = {
      * 第二次循环完，回到第一次进入后  newArr = newArr.concat(steamroller(arr[i]));  [4,5].concat([1,23])   [4,5,1,23]
      * 然后回到第一次   [1,2].concat([4,5,1,23])
      */
-    //  steamroller: function (arr) {
-    //      var newArr = [];
-    //      for (var i = 0; i < arr.length; i++) {
-    //          if (Array.isArray(arr[i])) {
-    //              // 如果是数组，调用(递归)steamroller 将其扁平化
-    //              // 然后再 push 到 newArr 中
-    //              newArr = newArr.concat(steamroller(arr[i]));
-    //          } else {
-    //              // 不是数组直接 push 到 newArr 中
-    //              newArr.push(arr[i]);
-    //          }
-    //      }
-    //      return newArr;
-    //  },
-    //创建正则字符
+    /**
+     * 创建正则字符
+     */
     createKeyExp: function(strArr) {
         var str = "";
         for (var i = 0; i < strArr.length; i++) {
@@ -846,11 +850,11 @@ var Utils = {
         content = content.replace(/<\/?[^>]*>/g, '')
         return content.replace(Reg, "<" + _el + ">$1</" + _el + ">");
     },
-    //数据类型判断
-    //ecDo.istype([],'array')
-    //true
-    //ecDo.istype([])
-    //'[object Array]'
+    /**
+     * 数据类型判断 
+     * istype([],'array') => true
+     * ecDo.istype([])  => [object Array]
+     */
     istype: function(o, type) {
         if (_type) {
             var _type = type.toLowerCase();
@@ -880,11 +884,10 @@ var Utils = {
                 return Object.prototype.toString.call(o)
         }
     },
-    //找出最长单词 (Find the Longest word in a String)
-    //longestWord('Find the Longest word in a String')
-    //7
-    //longestWord('Find|the|Longest|word|in|a|String','|')
-    //7
+    /**
+     * 找出最长单词 (Find the Longest word in a String)
+     * longestWord('Find the Longest word in a String') => 7
+     */
     longestWord: function(str, splitType) {
         var _splitType = splitType || /\s+/g,
             _max = 0;
@@ -896,10 +899,10 @@ var Utils = {
         })
         return _max;
     },
-    //句中单词首字母大写 (Title Case a Sentence)
-    //这个我也一直在纠结，英文标题，即使是首字母大写，也未必每一个单词的首字母都是大写的，但是又不知道哪些应该大写，哪些不应该大写
-    //ecDo.titleCaseUp('this is a title')
-    //"This Is A Title"
+    /**
+     * 句中单词首字母大写 (Title Case a Sentence)
+     * titleCaseUp('this is a title') => "This Is A Title"
+     */
     titleCaseUp: function(str, splitType) {
         var _splitType = splitType || /\s+/g;
         var strArr = str.split(_splitType),
@@ -910,11 +913,13 @@ var Utils = {
         })
         return this.trim(result, 4)
     },
-    //过滤字符串(html标签，表情，特殊字符)
-    //字符串，替换内容（special-特殊字符,html-html标签,emjoy-emjoy表情,word-小写字母，WORD-大写字母，number-数字,chinese-中文），要替换成什么，默认'',保留哪些特殊字符
-    //如果需要过滤多种字符，type参数使用,分割，如下栗子
-    //过滤字符串的html标签，大写字母，中文，特殊字符，全部替换成*,但是特殊字符'%'，'?'，除了这两个，其他特殊字符全部清除
-    //var str='asd    654a大蠢sasdasdASDQWEXZC6d5#%^*^&*^%^&*$\\"\'#@!()*/-())_\'":"{}?<div></div><img src=""/>啊实打实大蠢猪自行车这些课程';
+    /**
+     * 过滤字符串(html标签，表情，特殊字符)
+     * 字符串，替换内容（special-特殊字符,html-html标签,emjoy-emjoy表情,word-小写字母，WORD-大写字母，number-数字,chinese-中文），要替换成什么，默认'',保留哪些特殊字符
+     * 如果需要过滤多种字符，type参数使用,分割，如下栗子
+     * 过滤字符串的html标签，大写字母，中文，特殊字符，全部替换成*,但是特殊字符'%'，'?'，除了这两个，其他特殊字符全部清除
+     */
+    // var str='asd    654a大蠢sasdasdASDQWEXZC6d5#%^*^&*^%^&*$\\"\'#@!()*/-())_\'":"{}?<div></div><img src=""/>啊实打实大蠢猪自行车这些课程';
     // ecDo.filterStr(str,'html,WORD,chinese,special','*','%?')
     //"asd    654a**sasdasd*********6d5#%^*^&*^%^&*$\"'#@!()*/-())_'":"{}?*****************"
     filterStr: function(str, type, restr, spstr) {
